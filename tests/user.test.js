@@ -1,9 +1,11 @@
 const request = require('supertest')
 const app = require('../src/app')
 const User = require('../src/models/user')
-const { userOne, userOneId, setupTestDatabase } = require('./fixtures/db')
+const { userOne, userOneId, setupTestDatabase, closeTestDatabase } = require('./fixtures/db')
 
-beforeEach(setupTestDatabase)
+beforeAll(async () => await setupTestDatabase());
+
+afterAll(async () => await closeTestDatabase());
 
 test('Should Signup a new user', async () => {
     const response = await request(app).post('/users').send({
@@ -59,23 +61,6 @@ test('Should not get profile for unauthenticated user', async () => {
         .expect(401)
 })
 
-test('Should delete account for authenticated user', async () => {
-    await request(app)
-        .delete('/users/me')
-        .set('Authorization', `Bearer ${userOne.tokens[0].token}`)
-        .send()
-        .expect(200)
-    const user = await User.findById(userOneId)
-    expect(user).toBeNull()
-})
-
-test('Should not delete account for unauthenticated user', async () => {
-    await request(app)
-        .delete('/users/me')
-        .send()
-        .expect(401)
-})
-
 test('Should upload an avatar', async () => {
     await request(app)
         .post('/users/me/avatar')
@@ -106,4 +91,21 @@ test('Should not update invalid user field', async () => {
             location: 'Kolkata'
         })
         .expect(400)
+})
+
+test('Should delete account for authenticated user', async () => {
+    await request(app)
+        .delete('/users/me')
+        .set('Authorization', `Bearer ${userOne.tokens[0].token}`)
+        .send()
+        .expect(200)
+    const user = await User.findById(userOneId)
+    expect(user).toBeNull()
+})
+
+test('Should not delete account for unauthenticated user', async () => {
+    await request(app)
+        .delete('/users/me')
+        .send()
+        .expect(401)
 })

@@ -47,14 +47,20 @@ const taskThree = {
 }
 
 const setupTestDatabase = async () => {
-    await User.deleteMany()
-    await Task.deleteMany()
-    await new User(userOne).save()
-    await new User(userTwo).save()
-    await new Task(taskOne).save()
-    await new Task(taskTwo).save()
-    await new Task(taskThree).save()
+    // connect to database
+	require('../../src/db/mongoose');
+
+	await User.deleteMany({}).exec();
+	await new User(userOne).save();
+	await new User(userTwo).save();
+
+	await Task.deleteMany({}).exec();
+	await new Task(taskOne).save();
+	await new Task(taskTwo).save();
+	await new Task(taskThree).save();
 }
+
+const closeTestDatabase = async () => await mongoose.disconnect()
 
 module.exports = {
     userOne,
@@ -64,5 +70,6 @@ module.exports = {
     taskOne,
     taskTwo,
     taskThree,
-    setupTestDatabase
+    setupTestDatabase,
+    closeTestDatabase
 }
