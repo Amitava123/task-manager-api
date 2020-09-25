@@ -1,11 +1,11 @@
 const request = require('supertest')
 const app = require('../src/app')
 const Task = require('../src/models/task')
-const { userOne, userOneId, userTwo, userTwoId, taskOne, setupTestDatabase, closeTestDatabase } = require('./fixtures/db')
+const { userOne, userOneId, userTwo, userTwoId, taskOne, openTestDatabase, setupTestDatabase, closeTestDatabase } = require('./fixtures/db')
 
-beforeAll(async () => await setupTestDatabase());
-
-afterAll(async () => await closeTestDatabase());
+beforeAll(openTestDatabase)
+beforeEach(setupTestDatabase)
+afterAll(closeTestDatabase)
 
 test('Should create task for user',async () => {
     const response = await request(app)
@@ -26,7 +26,7 @@ test('Should fetch user task', async() => {
         .set('Authorization', `Bearer ${userOne.tokens[0].token}`)
         .send()
         .expect(200)
-    expect(response.body.length).toEqual(3)
+    expect(response.body.length).toEqual(2)
 })
 
 test('Should not Delete other users Tasks',async () => {

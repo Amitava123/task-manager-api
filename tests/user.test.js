@@ -1,11 +1,11 @@
 const request = require('supertest')
 const app = require('../src/app')
 const User = require('../src/models/user')
-const { userOne, userOneId, setupTestDatabase, closeTestDatabase } = require('./fixtures/db')
+const { userOne, userOneId, openTestDatabase, setupTestDatabase, closeTestDatabase } = require('./fixtures/db')
 
-beforeAll(async () => await setupTestDatabase());
-
-afterAll(async () => await closeTestDatabase());
+beforeAll(openTestDatabase)
+beforeEach(setupTestDatabase)
+afterAll(closeTestDatabase)
 
 test('Should Signup a new user', async () => {
     const response = await request(app).post('/users').send({

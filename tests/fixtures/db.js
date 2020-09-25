@@ -47,9 +47,6 @@ const taskThree = {
 }
 
 const setupTestDatabase = async () => {
-    // connect to database
-	require('../../src/db/mongoose');
-
 	await User.deleteMany({}).exec();
 	await new User(userOne).save();
 	await new User(userTwo).save();
@@ -59,6 +56,8 @@ const setupTestDatabase = async () => {
 	await new Task(taskTwo).save();
 	await new Task(taskThree).save();
 }
+
+const openTestDatabase = () => require('../../src/db/mongoose');
 
 const closeTestDatabase = async () => await mongoose.disconnect()
 
@@ -70,6 +69,7 @@ module.exports = {
     taskOne,
     taskTwo,
     taskThree,
+    openTestDatabase,
     setupTestDatabase,
     closeTestDatabase
 }
