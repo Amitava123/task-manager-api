@@ -28,15 +28,4 @@ taskSchema.pre('save', (next) => {
 
 const Task = mongoose.model('Task', taskSchema)
 
-// const task = new Tasks({
-//     description: 'New Task One',
-//     completed: false
-// })
-
-// task.save().then(() => {
-//     console.log(task)
-// }).catch((err) => {
-//     console.log(err)
-// })
-
 module.exports = Task
